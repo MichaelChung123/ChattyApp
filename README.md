@@ -23,6 +23,22 @@ npm start
 open http://localhost:3000
 ```
 
+### Screenshots
+![Chatty App](https://github.com/MichaelChung123/ChattyApp/blob/master/docs/display-app.png)
+
+![Sending Message to All Users On The Server](https://github.com/MichaelChung123/ChattyApp/blob/master/docs/main-paired.png)
+
+![Sending Message to All Users On The Server](https://github.com/MichaelChung123/ChattyApp/blob/master/docs/pre-send-reg-msg.png)
+(https://github.com/MichaelChung123/ChattyApp/blob/master/docs/send-reg-msg.png)
+
+![Changing The Messenger's Name](https://github.com/MichaelChung123/ChattyApp/blob/master/docs/pre-new-user-msg.png)
+(https://github.com/MichaelChung123/ChattyApp/blob/master/docs/new-user-msg.png)
+
+![Displaying & Updating The Amount of Users On The Server](Uhttps://github.com/MichaelChung123/ChattyApp/blob/master/docs/log-third-user.pngRL)
+(https://github.com/MichaelChung123/ChattyApp/blob/master/docs/show-display-count.png)
+
+
+
 ### Static Files
 
 You can store static files like images, fonts, etc in the `build` folder.
