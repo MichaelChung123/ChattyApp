@@ -38,8 +38,6 @@ class App extends Component {
     let userString = JSON.stringify(user);
 
     this.ws.send(userString);
-
-    console.log(userString);
   }
 
   componentDidMount() {
@@ -74,7 +72,6 @@ class App extends Component {
     }
 
     setTimeout(() => {
-      console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
       const newMessage = { id: 3, username: "Michelle", content: "Hello there!" };
       const messages = this.state.messages.concat(newMessage)
@@ -170,6 +167,8 @@ class ChatBar extends Component {
         id: highest + 1
       }
 
+      e.target.value = "";
+
       this.props.addNewMessage(newMessage);
     }
   }
@@ -177,11 +176,15 @@ class ChatBar extends Component {
   createCurrentUser(e) {
     e.preventDefault();
 
-    let newName = this.props.currentUser;
-
     if (e.keyCode === 13) {
       var newCurrentUser = {
         currentUser: e.target.value
+      }
+
+      if(e.target.value === "") {
+        var newCurrentUser = {
+          currentUser: "Anonymous"
+        }
       }
 
       this.props.changeCurrentUser(newCurrentUser);
