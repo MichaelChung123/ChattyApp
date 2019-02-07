@@ -30,10 +30,18 @@ wss.on('connection', (ws) => {
         });
     };
 
-    console.log("Total Users: ", wss.clients.size);
-    let totalUsers = JSON.stringify(wss.clients.size);
+    // console.log("Total Users: ", wss.clients.size);
+    // let totalUsers = JSON.stringify(wss.clients.size);
 
-    wss.broadcast(totalUsers);
+    // wss.broadcast(totalUsers);
+
+    let totalClients = {
+        totalUsers: wss.clients.size,
+        type: "refresh"
+    };
+
+    wss.broadcast(JSON.stringify(totalClients));    
+
 
     ws.on('message', function incoming(data) {
         let parseData = JSON.parse(data);
@@ -44,7 +52,8 @@ wss.on('connection', (ws) => {
 
         if(parseData.type === "postMessage") {
             parseData.type = "incomingMessage";
-        } else if (parseData.type === "postNotification") {
+        } 
+        else if (parseData.type === "postNotification") {
             parseData.type = "incomingNotification";
         }
 
@@ -52,11 +61,18 @@ wss.on('connection', (ws) => {
 
         console.log("data:" + dataString);
 
-
         wss.broadcast(dataString);
     });
 
 
     // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-    ws.on('close', () => console.log('Client disconnected'));
+    ws.on('close', () => {
+        console.log('Client disconnected')
+        let totalOpenClients = {
+            totalUsers: wss.clients.size,
+            type: "refresh"
+        };
+        
+        wss.broadcast(JSON.stringify(totalOpenClients));
+    });
 });

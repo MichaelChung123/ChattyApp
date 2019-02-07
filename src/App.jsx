@@ -23,21 +23,30 @@ class App extends Component {
       username: message.username,
       content: message.content
     }
-
+  
     let messageString = JSON.stringify(userData);
 
     this.ws.send(messageString);
   }
 
   changeCurrentUser(name) {
+    let originalName = this.state.currentUser.name;
+
     let user = {
       type: "postNotification",
-      currentUser: name.currentUser
+      content: `${originalName} has changed to ${name.currentUser}`,
     }
 
     let userString = JSON.stringify(user);
 
     this.ws.send(userString);
+
+    console.log("This is name", name);
+
+
+    this.setState({
+      currentUser: {name: name.currentUser}
+    });
   }
 
   componentDidMount() {
@@ -55,19 +64,26 @@ class App extends Component {
           break;
 
         case "incomingNotification":
-          let oldUsername = this.state.currentUser.name;
+          // let oldUsername = this.state.currentUser.name;
 
-          let newUsername = { name: parseData.currentUser }
+          // let newUsername = { name: parseData.currentUser }
+          // this.setState({
+          //   currentUser: newUsername,
+          //   oldUser: oldUsername
+          // });
+          let oldMessages1 = this.state.messages;
+          let newMessages1 = oldMessages1.concat(JSON.parse(event.data));
+
           this.setState({
-            currentUser: newUsername,
-            oldUser: oldUsername
+            messages: newMessages1
           });
           break;
 
-        default:
+        case "refresh":
           this.setState({
-            totalUsers: parseData
+            totalUsers: parseData.totalUsers
           });
+          break;
       }
     }
 
@@ -108,34 +124,45 @@ class Nav extends Component {
 class MessageList extends Component {
 
   render() {
-    const listMessages = this.props.messages.map((msg) =>
-      <div className="message" key={msg.id}>
-        <span className="message-username">{msg.username}</span>
-        <span className="message-content">{msg.content}</span>
-      </div>
-    );
+    const listMessages = this.props.messages.map(({ type, id, username, content}) => {
+      if (type === 'incomingNotification') {
+        return (
+          <div className="message system">
+            { content }
+          </div>
+        )
+      } else {
+        return (
+          <div className="message" key={id}>
+            <span className="message-username">{username}</span>
+            <span className="message-content">{content}</span>
+          </div>
+        )
+      }
+    });
 
-    const newUser = this.props.currentUser.name;
-    const oldUser = this.props.oldUser;
-    let notification;
+    // const newUser = this.props.currentUser.name;
+    // const oldUser = this.props.oldUser;
+    // let notification;
 
-    if (oldUser) {
-      notification = (
-        <div className="message system">
-          {oldUser} changed their name to {newUser}.
-        </div>
-      );
-    } else {
-      notification = (
-        <div className="message system">
-        </div>
-      );
-    }
+
+
+    // if (oldUser) {
+    //   notification = (
+    //     <div className="message system">
+    //       {oldUser} changed their name to {newUser}.
+    //     </div>
+    //   );
+    // } else {
+    //   notification = (
+    //     <div className="message system">
+    //     </div>
+    //   );
+    // }
 
     return (
       <main className="messages">
         {listMessages}
-        {notification}
       </main>
     );
   }
@@ -181,7 +208,7 @@ class ChatBar extends Component {
         currentUser: e.target.value
       }
 
-      if(e.target.value === "") {
+      if (e.target.value === "") {
         var newCurrentUser = {
           currentUser: "Anonymous"
         }
